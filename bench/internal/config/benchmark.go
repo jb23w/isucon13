@@ -21,10 +21,12 @@ const ChangableParallelism = 100
 const NumMustTryLogins = 10
 
 // HTTPクライアント(isucandar/agent) のタイムアウト
-const DefaultAgentTimeout = 20 * time.Second
+//const DefaultAgentTimeout = 20 * time.Second
+const DefaultAgentTimeout = 30 * time.Second
 
 // POST /api/initialize 時のタイムアウト
-const InitializeAgentTimeout = 42 * time.Second
+// const InitializeAgentTimeout = 42 * time.Second
+const InitializeAgentTimeout = 60 * time.Second
 
 // SearchLivestreamsのLIMITのデフォルト
 const NumSearchLivestreams = 50
