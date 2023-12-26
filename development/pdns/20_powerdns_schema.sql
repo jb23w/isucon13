@@ -102,3 +102,40 @@ INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (1, 'ns1.
 INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (1, 'u.isucon.dev', 'A', '127.0.0.1', 3600, NULL);
 INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (1, 'pipe.u.isucon.dev', 'A', '127.0.0.1', 3600, NULL);
 INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (1, 'test001.u.isucon.dev', 'A', '127.0.0.1', 3600, NULL);
+
+DROP PROCEDURE IF EXISTS DropIndexIfExists;
+delimiter //
+CREATE PROCEDURE `DropIndexIfExists`(
+    IN i_table_name VARCHAR(128),
+    IN i_index_name VARCHAR(128)
+    )
+    BEGIN
+
+    SET @tableName = i_table_name;
+    SET @indexName = i_index_name;
+    SET @indexExists = 0;
+
+    SELECT 
+        1
+    INTO @indexExists FROM
+        INFORMATION_SCHEMA.STATISTICS
+    WHERE
+        TABLE_NAME = @tableName
+            AND INDEX_NAME = @indexName;
+
+    SET @query = CONCAT(
+        'DROP INDEX ', @indexName, ' ON ', @tableName
+    );
+    IF @indexExists THEN
+        PREPARE stmt FROM @query;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+    END IF;
+    END//
+delimiter ;
+
+Call DropIndexIfExists('records','records_type');
+CREATE INDEX records_type INDEX records (`disabled`,`type`,`name`);
+Call DropIndexIfExists('records','records_name');
+CREATE INDEX records_name INDEX records (`disabled`,`name`,domain_id);
+
