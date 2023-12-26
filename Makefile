@@ -14,6 +14,6 @@ test_benchmarker:
 .PHONY: test_benchmarker
 
 build_webapp:
-	$(MAKE) webapp/go docker_image
+	$(MAKE) webapp/rust docker_image
 .PHONY: build_webapp
 
